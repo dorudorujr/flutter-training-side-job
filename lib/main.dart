@@ -9,10 +9,18 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return Center(
+              child: SizedBox(
+                width: constraints.maxWidth / 2,
+                height: constraints.maxWidth / 2,
+                child: const Placeholder(),
+              ),
+            );
+          },
         ),
       ),
     );
