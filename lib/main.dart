@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:yumemi_weather/yumemi_weather.dart';
 
 void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({super.key});
+
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
+  String? _weatherCondition;
+  final _yumemiWeather = YumemiWeather();
+
+  void _fetchWeather() {
+    setState(() {
+      _weatherCondition = _yumemiWeather.fetchSimpleWeather();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +57,15 @@ class MainApp extends StatelessWidget {
               children: [
                 SizedBox(height: topPadding),
 
-                // ---- Placeholder ----
+                // ---- Weather Icon ----
                 SizedBox(
                   width: placeholderSize,
                   height: placeholderSize,
-                  child: const Placeholder(),
+                  child: _weatherCondition == null
+                      ? const Placeholder()
+                      : SvgPicture.asset(
+                          'assets/images/$_weatherCondition.svg'
+                        ),
                 ),
 
                 const SizedBox(height: imageTextSpacing),
@@ -89,7 +109,7 @@ class MainApp extends StatelessWidget {
                       child: const Text('Close'),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: _fetchWeather,
                       child: const Text('Reload'),
                     ),
                   ],
