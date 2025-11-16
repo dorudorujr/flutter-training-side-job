@@ -12,16 +12,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.endOfFrame.then((_) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const WeatherScreen(),
-            ),
-          );
-        }
-      });
+
+    // lintで指定しているunawaitedが存在しない&待機不要なためwarning無効化
+    // ignore: discarded_futures
+    WidgetsBinding.instance.endOfFrame.then((_) async {
+      Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const WeatherScreen(),
+          ),
+        );
+      }
     });
   }
 
