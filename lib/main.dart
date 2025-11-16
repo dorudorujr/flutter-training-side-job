@@ -6,14 +6,59 @@ void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: SplashScreen(),
+    );
+  }
 }
 
-class _MainAppState extends State<MainApp> {
+// スプラッシュ画面
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.endOfFrame.then((_) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const WeatherScreen(),
+            ),
+          );
+        }
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Colors.green,
+    );
+  }
+}
+
+// 天気画面
+class WeatherScreen extends StatefulWidget {
+  const WeatherScreen({super.key});
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
   String? _weatherCondition;
   final _yumemiWeather = YumemiWeather();
 
@@ -25,8 +70,7 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         body: LayoutBuilder(
           builder: (context, constraints) {
             // サイズ定義
@@ -105,7 +149,9 @@ class _MainAppState extends State<MainApp> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                       child: const Text('Close'),
                     ),
                     TextButton(
@@ -118,7 +164,6 @@ class _MainAppState extends State<MainApp> {
             );
           },
         ),
-      ),
-    );
+      );
   }
 }
