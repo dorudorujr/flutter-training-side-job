@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // lintで指定しているunawaitedが存在しない&待機不要なためwarning無効化
     // ignore: discarded_futures
     WidgetsBinding.instance.endOfFrame.then((_) async {
-      Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
       if (mounted) {
         await Navigator.of(context).push(
           MaterialPageRoute(
