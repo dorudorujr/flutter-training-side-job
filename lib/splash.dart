@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/weather_screen.dart';
 
@@ -13,18 +14,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // lintで指定しているunawaitedが存在しない&待機不要なためwarning無効化
-    // ignore: discarded_futures
-    WidgetsBinding.instance.endOfFrame.then((_) async {
-      await Future<void>.delayed(const Duration(milliseconds: 500));
-      if (mounted) {
-        await Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (context) => const WeatherScreen(),
-          ),
-        );
-      }
-    });
+    unawaited(
+        _waitAndNavigate()
+    );
   }
 
   @override
@@ -32,5 +24,17 @@ class _SplashScreenState extends State<SplashScreen> {
     return const Scaffold(
       backgroundColor: Colors.green,
     );
+  }
+
+  Future<void> _waitAndNavigate() async {
+    await WidgetsBinding.instance.endOfFrame;
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    if (mounted) {
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => const WeatherScreen(),
+        ),
+      );
+    }
   }
 }
