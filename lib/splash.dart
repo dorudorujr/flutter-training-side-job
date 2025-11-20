@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_training/post_layout_callback_mixin.dart';
 import 'package:flutter_training/weather_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -9,16 +10,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    unawaited(
-        _waitAndNavigate()
-    );
-  }
-
+class _SplashScreenState extends State<SplashScreen>
+    with PostLayoutCallbackMixin {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -26,8 +19,12 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
+  @override
+  void onPostLayout() {
+    unawaited(_waitAndNavigate());
+  }
+
   Future<void> _waitAndNavigate() async {
-    await WidgetsBinding.instance.endOfFrame;
     await Future<void>.delayed(const Duration(milliseconds: 500));
     if (mounted) {
       await Navigator.of(context).push(
