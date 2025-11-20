@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 /// レイアウトが表示された後に処理を行うためのMixin
@@ -5,7 +6,7 @@ mixin PostLayoutCallbackMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     super.initState();
-    _executeAfterLayout();
+    unawaited(_executeAfterLayout());
   }
 
   /// レイアウト表示後に実行する処理
