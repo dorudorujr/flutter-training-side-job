@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -12,13 +13,24 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   String? _weatherCondition;
+  int? _minTemperature;
+  int? _maxTemperature;
   final _yumemiWeather = YumemiWeather();
 
   void _fetchWeather() {
     try {
-      final weatherCondition = _yumemiWeather.fetchThrowsWeather('tokyo');
+      final requestJson = jsonEncode({
+        'area': 'tokyo',
+        'date': DateTime.now().toIso8601String(),
+      });
+
+      final responseJson = _yumemiWeather.fetchWeather(requestJson);
+      final response = jsonDecode(responseJson) as Map<String, dynamic>;
+
       setState(() {
-        _weatherCondition = weatherCondition;
+        _weatherCondition = response['weather_condition'] as String?;
+        _minTemperature = response['min_temperature'] as int?;
+        _maxTemperature = response['max_temperature'] as int?;
       });
     } on YumemiWeatherError catch (e) {
       _showErrorDialog(e);
@@ -103,7 +115,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     SizedBox(
                       width: constraints.maxWidth / 4,
                       child: Text(
-                        '** ℃',
+                        _minTemperature != null ? '$_minTemperature ℃' : '** ℃',
                         textAlign: TextAlign.center,
                         style: textStyle?.copyWith(
                           color: Colors.blue,
@@ -113,7 +125,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     SizedBox(
                       width: constraints.maxWidth / 4,
                       child: Text(
-                        '** ℃',
+                        _maxTemperature != null ? '$_maxTemperature ℃' : '** ℃',
                         textAlign: TextAlign.center,
                         style: textStyle?.copyWith(
                           color: Colors.red,
