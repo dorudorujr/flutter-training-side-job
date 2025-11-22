@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_training/models/weather_request.dart';
+import 'package:flutter_training/models/weather_response.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherScreen extends StatefulWidget {
@@ -19,18 +21,24 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
   void _fetchWeather() {
     try {
-      final requestJson = jsonEncode({
-        'area': 'tokyo',
-        'date': DateTime.now().toIso8601String(),
-      });
+      // json_serializableを使用してリクエストを作成
+      final request = WeatherRequest(
+        area: 'tokyo',
+        date: DateTime.now().toIso8601String(),
+      );
+      final requestJson = jsonEncode(request.toJson());
 
       final responseJson = _yumemiWeather.fetchWeather(requestJson);
-      final response = jsonDecode(responseJson) as Map<String, dynamic>;
+
+      // json_serializableを使用してレスポンスを変換
+      final response = WeatherResponse.fromJson(
+        jsonDecode(responseJson) as Map<String, dynamic>,
+      );
 
       setState(() {
-        _weatherCondition = response['weather_condition'] as String?;
-        _minTemperature = response['min_temperature'] as int?;
-        _maxTemperature = response['max_temperature'] as int?;
+        _weatherCondition = response.weatherCondition;
+        _minTemperature = response.minTemperature;
+        _maxTemperature = response.maxTemperature;
       });
     } on YumemiWeatherError catch (e) {
       _showErrorDialog(e);
