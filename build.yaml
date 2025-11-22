@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # ネストしたオブジェクトも適切にJSON化
+          explicit_to_json: true
+          # Dartのキャメルケースとサーバー側のスネークケースを自動変換
+          field_rename: snake
+          # 型安全性を高める（実行時に型チェック）
+          checked: true
+          # nullableなフィールドを適切に扱う
+          any_map: false
+          # コンストラクタ名をデフォルトに
+          constructor: ''
