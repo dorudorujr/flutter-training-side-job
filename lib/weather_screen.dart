@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -14,9 +15,39 @@ class _WeatherScreenState extends State<WeatherScreen> {
   final _yumemiWeather = YumemiWeather();
 
   void _fetchWeather() {
-    setState(() {
-      _weatherCondition = _yumemiWeather.fetchSimpleWeather();
-    });
+    try {
+      final weatherCondition = _yumemiWeather.fetchThrowsWeather('tokyo');
+      setState(() {
+        _weatherCondition = weatherCondition;
+      });
+    } on YumemiWeatherError catch (e) {
+      _showErrorDialog(e);
+    }
+  }
+
+  void _showErrorDialog(YumemiWeatherError error) {
+    final message = switch (error) {
+      YumemiWeatherError.invalidParameter => '無効なパラメータが指定されました。',
+      YumemiWeatherError.unknown => '予期しないエラーが発生しました。\nもう一度お試しください。',
+    };
+
+    unawaited(
+        showDialog<void>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('エラー'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        )
+    );
   }
 
   @override
