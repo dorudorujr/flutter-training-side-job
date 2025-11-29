@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
@@ -20,6 +21,6 @@ class WeatherDataSource {
 }
 
 @riverpod
-WeatherDataSource weatherDataSource(WeatherDataSourceRef ref) {
+WeatherDataSource weatherDataSource(Ref ref) {
   return WeatherDataSource(YumemiWeather());
 }
