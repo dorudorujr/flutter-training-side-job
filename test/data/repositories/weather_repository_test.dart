@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_training/data/data_sources/weather_data_source.dart';
 import 'package:flutter_training/data/repositories/weather_repository.dart';
-import 'package:flutter_training/models/weather_response.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -21,10 +20,10 @@ void main() {
 
     test('fetchWeather が成功時、WeatherResponse を返す', () {
       // Arrange
-      final date = DateTime(2024, 1, 1);
+      final date = DateTime(2024);
       const area = 'tokyo';
-      const responseJson =
-          '{"weather_condition":"sunny","min_temperature":10,"max_temperature":20}';
+      const responseJson = '{"weather_condition":"sunny",'
+          '"min_temperature":10,"max_temperature":20}';
 
       when(mockDataSource.fetchWeather(any)).thenReturn(responseJson);
 
@@ -49,7 +48,7 @@ void main() {
 
     test('fetchWeather が invalidParameter エラーをスローする', () {
       // Arrange
-      final date = DateTime(2024, 1, 1);
+      final date = DateTime(2024);
       const area = 'invalid_area';
 
       when(mockDataSource.fetchWeather(any))
@@ -67,7 +66,7 @@ void main() {
 
     test('fetchWeather が unknown エラーをスローする', () {
       // Arrange
-      final date = DateTime(2024, 1, 1);
+      final date = DateTime(2024);
       const area = 'tokyo';
 
       when(mockDataSource.fetchWeather(any))
@@ -85,7 +84,7 @@ void main() {
 
     test('fetchWeather がJSON decode エラーをスローする', () {
       // Arrange
-      final date = DateTime(2024, 1, 1);
+      final date = DateTime(2024);
       const area = 'tokyo';
       const invalidJson = 'invalid json';
 

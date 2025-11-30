@@ -38,7 +38,8 @@ void main() {
       // Assert
       expect(
         jsonString,
-        '{"weather_condition":"cloudy","min_temperature":5,"max_temperature":15}',
+        '{"weather_condition":"cloudy",'
+        '"min_temperature":5,"max_temperature":15}',
       );
     });
 
@@ -61,8 +62,8 @@ void main() {
 
     test('JSON文字列からWeatherResponseへデコードできる', () {
       // Arrange
-      const jsonString =
-          '{"weather_condition":"sunny","min_temperature":10,"max_temperature":25}';
+      const jsonString = '{"weather_condition":"sunny",'
+          '"min_temperature":10,"max_temperature":25}';
 
       // Act
       final json = jsonDecode(jsonString) as Map<String, dynamic>;

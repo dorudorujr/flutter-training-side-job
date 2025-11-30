@@ -17,21 +17,25 @@ void main() {
       weatherDataSource = WeatherDataSource(mockYumemiWeather);
     });
 
-    test('fetchWeather が成功時、YumemiWeather から返されたJSON文字列を返す', () {
-      // Arrange
-      const requestJson = '{"area":"tokyo","date":"2024-01-01T00:00:00.000"}';
-      const expectedResponse =
-          '{"weatherCondition":"sunny","minTemperature":10,"maxTemperature":20}';
-      when(mockYumemiWeather.fetchWeather(requestJson))
-          .thenReturn(expectedResponse);
+    test(
+      'fetchWeather が成功時、YumemiWeather から返されたJSON文字列を返す',
+      () {
+        // Arrange
+        const requestJson =
+            '{"area":"tokyo","date":"2024-01-01T00:00:00.000"}';
+        const expectedResponse = '{"weatherCondition":"sunny",'
+            '"minTemperature":10,"maxTemperature":20}';
+        when(mockYumemiWeather.fetchWeather(requestJson))
+            .thenReturn(expectedResponse);
 
-      // Act
-      final result = weatherDataSource.fetchWeather(requestJson);
+        // Act
+        final result = weatherDataSource.fetchWeather(requestJson);
 
-      // Assert
-      expect(result, expectedResponse);
-      verify(mockYumemiWeather.fetchWeather(requestJson)).called(1);
-    });
+        // Assert
+        expect(result, expectedResponse);
+        verify(mockYumemiWeather.fetchWeather(requestJson)).called(1);
+      },
+    );
 
     test('fetchWeather が失敗時、YumemiWeatherError をスローする', () {
       // Arrange
