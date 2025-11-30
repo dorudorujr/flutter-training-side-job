@@ -491,6 +491,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.4"
+  riverpod_graph:
+    dependency: "direct dev"
+    description:
+      name: riverpod_graph
+      sha256: "4a433b65580001e0a1d04b8df2edbc1e2e0972f459192a99bf83b03d5bb95b7d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   shelf:
     dependency: transitive
     description:
