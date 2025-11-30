@@ -7,7 +7,7 @@ part of 'weather_ui_state_repository.dart';
 // **************************************************************************
 
 String _$weatherUiStateRepositoryHash() =>
-    r'30704aa222342485b3630a8173fddb3a97bd3349';
+    r'1d7b4ff7d275870c45009455f48c1325cb3df700';
 
 /// 天気ページのUI状態を管理するリポジトリ
 ///
