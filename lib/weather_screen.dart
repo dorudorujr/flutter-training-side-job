@@ -1,77 +1,44 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_training/models/weather_request.dart';
-import 'package:flutter_training/models/weather_response.dart';
-import 'package:yumemi_weather/yumemi_weather.dart';
+import 'package:flutter_training/domain/use_cases/fetch_weather_use_case.dart';
+import 'package:flutter_training/presentation/providers/weather_page_ui_state_provider.dart';
 
-class WeatherScreen extends StatefulWidget {
+class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
 
-  @override
-  State<WeatherScreen> createState() => _WeatherScreenState();
-}
-
-class _WeatherScreenState extends State<WeatherScreen> {
-  String? _weatherCondition;
-  int? _minTemperature;
-  int? _maxTemperature;
-  final _yumemiWeather = YumemiWeather();
-
-  void _fetchWeather() {
-    try {
-      // json_serializableを使用してリクエストを作成
-      final request = WeatherRequest(
-        area: 'tokyo',
-        date: DateTime.now().toIso8601String(),
-      );
-      final requestJson = jsonEncode(request.toJson());
-
-      final responseJson = _yumemiWeather.fetchWeather(requestJson);
-
-      // json_serializableを使用してレスポンスを変換
-      final response = WeatherResponse.fromJson(
-        jsonDecode(responseJson) as Map<String, dynamic>,
-      );
-
-      setState(() {
-        _weatherCondition = response.weatherCondition;
-        _minTemperature = response.minTemperature;
-        _maxTemperature = response.maxTemperature;
-      });
-    } on YumemiWeatherError catch (e) {
-      _showErrorDialog(e);
-    }
-  }
-
-  void _showErrorDialog(YumemiWeatherError error) {
-    final message = switch (error) {
-      YumemiWeatherError.invalidParameter => '無効なパラメータが指定されました。',
-      YumemiWeatherError.unknown => '予期しないエラーが発生しました。\nもう一度お試しください。',
-    };
-
+  void _showErrorDialog(BuildContext context, String message) {
     unawaited(
-        showDialog<void>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('エラー'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        )
+      showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('エラー'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final uiState = ref.watch(weatherPageUiStateProvider);
+
+    // エラーメッセージがある場合、ダイアログを表示
+    if (uiState.errorMessage != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showErrorDialog(context, uiState.errorMessage!);
+      });
+    }
+
     return Scaffold(
         body: LayoutBuilder(
           builder: (context, constraints) {
@@ -107,10 +74,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 SizedBox(
                   width: placeholderSize,
                   height: placeholderSize,
-                  child: _weatherCondition == null
+                  child: uiState.weatherCondition == null
                       ? const Placeholder()
                       : SvgPicture.asset(
-                          'assets/images/$_weatherCondition.svg'
+                          'assets/images/${uiState.weatherCondition}.svg'
                         ),
                 ),
 
@@ -123,7 +90,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     SizedBox(
                       width: constraints.maxWidth / 4,
                       child: Text(
-                        _minTemperature != null ? '$_minTemperature ℃' : '** ℃',
+                        uiState.minTemperature != null
+                            ? '${uiState.minTemperature} ℃'
+                            : '** ℃',
                         textAlign: TextAlign.center,
                         style: textStyle?.copyWith(
                           color: Colors.blue,
@@ -133,7 +102,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     SizedBox(
                       width: constraints.maxWidth / 4,
                       child: Text(
-                        _maxTemperature != null ? '$_maxTemperature ℃' : '** ℃',
+                        uiState.maxTemperature != null
+                            ? '${uiState.maxTemperature} ℃'
+                            : '** ℃',
                         textAlign: TextAlign.center,
                         style: textStyle?.copyWith(
                           color: Colors.red,
@@ -157,7 +128,11 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       child: const Text('Close'),
                     ),
                     TextButton(
-                      onPressed: _fetchWeather,
+                      onPressed: () {
+                        unawaited(
+                          ref.read(fetchWeatherUseCaseProvider).execute(),
+                        );
+                      },
                       child: const Text('Reload'),
                     ),
                   ],
