@@ -3,11 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'dart:async' as _i6;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart' as _i3;
 import 'package:flutter_training/data/repositories/weather_repository.dart'
     as _i5;
 import 'package:flutter_training/data/repositories/weather_ui_state_repository.dart'
-    as _i6;
+    as _i7;
 import 'package:flutter_training/models/weather_response.dart' as _i2;
 import 'package:flutter_training/presentation/ui_state/weather_page_ui_state.dart'
     as _i4;
@@ -66,13 +68,35 @@ class MockWeatherRepository extends _i1.Mock implements _i5.WeatherRepository {
             ),
           )
           as _i2.WeatherResponse);
+
+  @override
+  _i6.Future<_i2.WeatherResponse> syncFetchWeather({
+    required String? area,
+    required DateTime? date,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#syncFetchWeather, [], {
+              #area: area,
+              #date: date,
+            }),
+            returnValue: _i6.Future<_i2.WeatherResponse>.value(
+              _FakeWeatherResponse_0(
+                this,
+                Invocation.method(#syncFetchWeather, [], {
+                  #area: area,
+                  #date: date,
+                }),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.WeatherResponse>);
 }
 
 /// A class which mocks [WeatherUiStateRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockWeatherUiStateRepository extends _i1.Mock
-    implements _i6.WeatherUiStateRepository {
+    implements _i7.WeatherUiStateRepository {
   MockWeatherUiStateRepository() {
     _i1.throwOnMissingStub(this);
   }

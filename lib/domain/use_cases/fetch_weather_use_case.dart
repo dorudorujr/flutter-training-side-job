@@ -22,7 +22,7 @@ class FetchWeatherUseCase {
     weatherUiStateRepository.setLoading(isLoading: true);
 
     try {
-      final response = weatherRepository.fetchWeather(
+      final response = await weatherRepository.syncFetchWeather(
         area: 'tokyo',
         date: DateTime.now(),
       );

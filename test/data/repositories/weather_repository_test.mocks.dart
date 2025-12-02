@@ -40,4 +40,15 @@ class MockWeatherDataSource extends _i1.Mock implements _i2.WeatherDataSource {
             ),
           )
           as String);
+
+  @override
+  String syncFetchWeather(String? requestJson) =>
+      (super.noSuchMethod(
+            Invocation.method(#syncFetchWeather, [requestJson]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#syncFetchWeather, [requestJson]),
+            ),
+          )
+          as String);
 }

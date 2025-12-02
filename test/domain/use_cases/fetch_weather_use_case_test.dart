@@ -34,11 +34,11 @@ void main() {
       );
 
       when(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: anyNamed('area'),
           date: anyNamed('date'),
         ),
-      ).thenReturn(weatherResponse);
+      ).thenAnswer((_) async => weatherResponse);
 
       // Act
       await fetchWeatherUseCase.execute();
@@ -48,7 +48,7 @@ void main() {
         // 1. ローディング開始
         mockWeatherUiStateRepository.setLoading(isLoading: true),
         // 2. 天気情報取得
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: 'tokyo',
           date: anyNamed('date'),
         ),
@@ -64,7 +64,7 @@ void main() {
     test('execute が invalidParameter エラー時、エラーメッセージを設定する', () async {
       // Arrange
       when(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: anyNamed('area'),
           date: anyNamed('date'),
         ),
@@ -78,7 +78,7 @@ void main() {
         // 1. ローディング開始
         mockWeatherUiStateRepository.setLoading(isLoading: true),
         // 2. 天気情報取得を試みる
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: 'tokyo',
           date: anyNamed('date'),
         ),
@@ -99,7 +99,7 @@ void main() {
     test('execute が unknown エラー時、エラーメッセージを設定する', () async {
       // Arrange
       when(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: anyNamed('area'),
           date: anyNamed('date'),
         ),
@@ -113,7 +113,7 @@ void main() {
         // 1. ローディング開始
         mockWeatherUiStateRepository.setLoading(isLoading: true),
         // 2. 天気情報取得を試みる
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: 'tokyo',
           date: anyNamed('date'),
         ),
@@ -147,22 +147,22 @@ void main() {
       );
 
       when(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: anyNamed('area'),
           date: anyNamed('date'),
         ),
-      ).thenAnswer((_) => weatherResponse1);
+      ).thenAnswer((_) async => weatherResponse1);
 
       // Act - 1回目
       await fetchWeatherUseCase.execute();
 
       // 2回目のレスポンスを設定
       when(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: anyNamed('area'),
           date: anyNamed('date'),
         ),
-      ).thenAnswer((_) => weatherResponse2);
+      ).thenAnswer((_) async => weatherResponse2);
 
       // Act - 2回目
       await fetchWeatherUseCase.execute();
@@ -171,7 +171,7 @@ void main() {
       verify(mockWeatherUiStateRepository.setLoading(isLoading: true))
           .called(2);
       verify(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: 'tokyo',
           date: anyNamed('date'),
         ),
@@ -201,18 +201,18 @@ void main() {
       );
 
       when(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: anyNamed('area'),
           date: anyNamed('date'),
         ),
-      ).thenReturn(weatherResponse);
+      ).thenAnswer((_) async => weatherResponse);
 
       // Act - 1回目（成功）
       await fetchWeatherUseCase.execute();
 
       // 2回目（失敗）
       when(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: anyNamed('area'),
           date: anyNamed('date'),
         ),
@@ -222,11 +222,11 @@ void main() {
 
       // 3回目（成功）
       when(
-        mockWeatherRepository.fetchWeather(
+        mockWeatherRepository.syncFetchWeather(
           area: anyNamed('area'),
           date: anyNamed('date'),
         ),
-      ).thenReturn(weatherResponse);
+      ).thenAnswer((_) async => weatherResponse);
 
       await fetchWeatherUseCase.execute();
 
