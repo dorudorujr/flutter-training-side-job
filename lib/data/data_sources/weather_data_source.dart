@@ -18,9 +18,25 @@ class WeatherDataSource {
   String fetchWeather(String requestJson) {
     return _yumemiWeather.fetchWeather(requestJson);
   }
+
+  /// 同期的に天気情報を取得する
+  ///
+  /// [requestJson] リクエストJSON文字列
+  /// 戻り値: レスポンスJSON文字列
+  /// throws: [YumemiWeatherError]
+  String syncFetchWeather(String requestJson) {
+    return _yumemiWeather.syncFetchWeather(requestJson);
+  }
+}
+
+/// YumemiWeatherインスタンスを提供するProvider
+@riverpod
+YumemiWeather yumemiWeather(Ref ref) {
+  return YumemiWeather();
 }
 
 @riverpod
 WeatherDataSource weatherDataSource(Ref ref) {
-  return WeatherDataSource(YumemiWeather());
+  final yumemiWeather = ref.watch(yumemiWeatherProvider);
+  return WeatherDataSource(yumemiWeather);
 }
