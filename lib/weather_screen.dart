@@ -74,11 +74,13 @@ class WeatherScreen extends ConsumerWidget {
                 SizedBox(
                   width: placeholderSize,
                   height: placeholderSize,
-                  child: uiState.weatherCondition == null
-                      ? const Placeholder()
-                      : SvgPicture.asset(
-                          'assets/images/${uiState.weatherCondition}.svg'
-                        ),
+                  child: uiState.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : uiState.weatherCondition == null
+                          ? const Placeholder()
+                          : SvgPicture.asset(
+                              'assets/images/${uiState.weatherCondition}.svg'
+                            ),
                 ),
 
                 const SizedBox(height: imageTextSpacing),
