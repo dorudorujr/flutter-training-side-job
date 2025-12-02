@@ -86,7 +86,7 @@ class WeatherRepository {
   Future<WeatherResponse> syncFetchWeather({
     required String area,
     required DateTime date,
-  }) async {
+  }) {
     return compute(
       _syncFetchWeatherInIsolate,
       _SyncFetchWeatherParams(
